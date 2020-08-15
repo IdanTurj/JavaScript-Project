@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="moments.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        #BGD {
+            background-image: url("tile.jpg");
+            background-repeat: repeat;
+        }
+
+        .inputT {
+            background-image: url("formbg.jpg");
+            font-size: 18px;
+            line-height: 1.85;
+            padding: 15px 90px;
+        }
+
+        .image {
+            margin: 5px;
+            margin-left: 200px;
+        }
+
+        .Notes {
+            background-image: url("notebg.png");
+            background-repeat: no-repeat;
+            font-size: 14px;
+            float: left;
+            padding: 20px 1px;
+            background-size: 100%;
+            width: 300px;
+            height: 500px;
+            -webkit-animation: fadein 2s;
+
+        }
+
+        .textNote {
+            width: 165px;
+            direction: ltr;
+            font-size: 15px;
+            position: inherit;
+            text-align: left;
+
+
+
+        }
+
+
+        .fas:hover {
+
+            padding: 2px 3px;
+
+        }
+
+        @-webkit-keyframes fadein {
+
+            /* Safari and Chrome */
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body id="BGD">
+    <div class="container">
+        <h1 class="image">
+            <image src="title.png"></image>
+        </h1>
+
+        <div class="row">
+            <div class="col-3">
+
+                <textarea rows="6" cols="100" style=" text-align: left; resize: none; border:none; direction: ltr;"
+                    class="inputT" id="inputIn" maxlength="140" required> </textarea>
+
+                <div class="bg-dark text-light" id="DV"></div>
+                <input class="form-control" type="date" id="DateTime">
+                <input class="form-control mt-2" type="time" id="Timer">
+
+
+                <button type="button" onclick="SaveI()">Save</button>
+                <button type="button" onclick="ClearI()">Clear</button>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 m-2">
+            <div id="NoteIn" max-length="40">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Saves = [];
+
+        var userDate = moment().format("DD/MM/YYYY");
+        if (localStorage.Save) {
+            Saves = JSON.parse(localStorage.Save);
+            str = "";
+
+            for (i = 0; i < Saves.length; i++) {
+                str += '<div class="Notes">';
+                str += '<i class="fas fa-backspace" onclick="Remove(this.id)"><image width="20px" height="20px" src="backspace-solid.svg"></i>';
+                str += '<div class="textNote">';
+                // str += `<div disabled style="text-align: left; direction:ltr; resize: none; width:165px;" class="m-1"  cols="100"> Text :  ${Saves[i]['text']}</div>`;
+                str += `<textarea disabled rows="6" cols="35" style="background: transparent; text-align: left; resize: none; border:none; direction: ltr;"
+                     required> ${Saves[i]['text']} </textarea>`;
+                str += `<div class="m-1"> Date : ${Saves[i]['Date']}</div>`;
+                str += `<div class="m-1"> Time : ${Saves[i]['Time']}</div>`;
+                str += '</div></div>';
+            }
+
+            NoteIn.innerHTML = str;
+
+        }
+
+
+        function ClearI() {
+            textIn = document.getElementById("inputIn").value = null;
+        }
+        function SaveI() {
+            var tosave = {};
+
+            Datee = moment(DateTime.value).format("DD/MM/YY");
+
+
+
+            if (Datee < userDate) {
+                DV.innerHTML = "Please ReDate your Reminder:";
+            } else if (Datee >= userDate) {
+
+                tosave.text = inputIn.value;
+                tosave.Date = moment(DateTime.value).format("DD/MM/YY");
+                tosave.Time = Timer.value;
+
+                Saves.push(tosave);
+
+                DV.innerHTML = "Thanks for placing a Reminder:";
+                localStorage.Save = JSON.stringify(Saves);
+
+
+            }
+            NoteIt();
+
+        }
+        function Remove(i) {
+            Saves.splice(i, 1);
+            localStorage.Save = JSON.stringify(Saves);
+            NoteIt();
+        }
+        function NoteIt() {
+
+            str = "";
+
+            for (i = 0; i < Saves.length; i++) {
+                str += '<div class="Notes">';
+                str += '<i class="fas fa-backspace" onclick="Remove(this.id)"><image width="20px" height="20px" src="backspace-solid.svg"></i>';
+                str += '<div class="textNote">';
+                // str += `<div class="m-1"  cols="100"> Text :  ${Saves[i]['text']}</div>`;
+                str += `<textarea disabled rows="6" cols="35" style="background: transparent; text-align: left; resize: none; border:none; direction: ltr;"
+                     required> ${Saves[i]['text']} </textarea>`;
+                str += `<div class="m-1"> Date : ${Saves[i]['Date']}</div>`;
+                str += `<div class="m-1"> Time : ${Saves[i]['Time']}</div>`;
+                str += '</div></div>';
+            }
+
+            NoteIn.innerHTML = str;
+
+        }
+
+
+    </script>
+
+</body>
+
+</html>
